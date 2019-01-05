@@ -22,8 +22,8 @@ func (s *State) AddUser() *user.User {
 }
 
 // AddGame adds a game.
-func (s *State) AddGame(owner *user.User) *game.Game {
-	g := game.New(s.NextGameID, owner.ID)
+func (s *State) AddGame(owner *user.User, width int, height int, mines int) *game.Game {
+	g := game.New(s.NextGameID, owner.ID, width, height, mines)
 	s.NextGameID++
 	s.Games[g.ID] = g
 	return g

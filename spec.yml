@@ -102,3 +102,12 @@ components:
         id:
           type: integer
           description: The game ID.
+        width:
+          type: integer
+          description: Board width
+        height:
+          type: integer
+          description: Board height
+        mines:
+          type: integer
+          description: How many mines to setup in the board. Limited to 50% of the board.

@@ -96,9 +96,7 @@ func (s *Server) createRoutes() *fasthttprouter.Router {
 
 func (s *Server) createHandler(realHandler func(*fasthttp.RequestCtx, *state.State) error) func(*fasthttp.RequestCtx) {
 	return func(ctx *fasthttp.RequestCtx) {
-		if err := realHandler(ctx, s.State); err != nil {
-			s.sendReqError(ctx, err)
-		}
+		realHandler(ctx, s.State)
 	}
 }
 

@@ -48,7 +48,7 @@ func CreateGame(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) erro
 		return errors.New("mine number too high")
 	}
 
-	g := state.AddGame(u)
+	g := state.AddGame(u, dto.Width, dto.Height, dto.Mines)
 	ctx.SetContentType("application/json")
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 	ctx.SetBody([]byte(g.JSON()))

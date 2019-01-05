@@ -8,13 +8,19 @@ import (
 type Game struct {
 	ID      int `json:"id"`
 	OwnerID int `json:"-"`
+	Width   int `json:"width"`
+	Height  int `json:"height"`
+	Mines   int `json:"mines"`
 }
 
 // New creates a new game.
-func New(id int, ownerID int) *Game {
+func New(id int, ownerID int, width int, height int, mines int) *Game {
 	return &Game{
 		ID:      id,
 		OwnerID: ownerID,
+		Width:   width,
+		Height:  height,
+		Mines:   mines,
 	}
 }
 
