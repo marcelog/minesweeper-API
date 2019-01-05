@@ -1,0 +1,24 @@
+openapi: 3.0.0
+info:
+  title: Minesweeper API
+  description: Deviget code challenge
+  version: 0.0.1
+
+servers:
+  - url: http://minesweeper.com/v1
+    description: Main server
+
+paths:
+  /users:
+    post:
+      summary: Creates a new user
+      description: If you're new to the system, start here
+      responses:
+        '200':
+          description: A JSON object describing the new user properties
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
