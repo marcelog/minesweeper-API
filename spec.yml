@@ -50,6 +50,12 @@ paths:
         '401':
           description: Authorization information is missing or invalid.
 
+        '400':
+          description: User error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '201':
           description: A JSON object describing the new game properties
           content:
@@ -85,8 +91,9 @@ components:
     Error:
       type: object
       properties:
-        message: string
-        description: The error message
+        message:
+          type: string
+          description: The error message
     User:
       type: object
       properties:
