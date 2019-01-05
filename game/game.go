@@ -7,6 +7,17 @@ import (
 )
 
 const (
+	// GameStarted the game is started
+	GameStarted = 0
+
+	// GameLost terminal state, the player lost
+	GameLost = 1
+
+	// GameWon terminal state, the player won
+	GameWon = 2
+)
+
+const (
 	// CellUnvisited A blank cell
 	CellUnvisited = 0
 
