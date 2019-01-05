@@ -26,7 +26,7 @@ func newServer(t *testing.T) (*Server, int, string) {
 	return s, p, url
 }
 
-func runRequest(t *testing.T, endpoint string) (string, error) {
+func runRequest(t *testing.T, endpoint string) (string, *http.Response, error) {
 	s, _, url := newServer(t)
 	res, err := http.Get(fmt.Sprintf("%s/%s", url, endpoint))
 	if err != nil {
@@ -36,13 +36,13 @@ func runRequest(t *testing.T, endpoint string) (string, error) {
 	byteValue, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		s.Stop()
-		return "", err
+		return "", res, err
 	}
 	res.Body.Close()
 
 	result := string(byteValue)
 	s.Stop()
-	return result, nil
+	return result, res, nil
 }
 
 func TestErrorOnListen(t *testing.T) {
