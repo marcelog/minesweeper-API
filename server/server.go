@@ -9,6 +9,7 @@ import (
 
 	"github.com/marcelog/minesweeper-API/endpoints"
 	"github.com/marcelog/minesweeper-API/state"
+	"github.com/marcelog/minesweeper-API/user"
 )
 
 // IServer is a generic interface to servers.
@@ -84,11 +85,30 @@ func (s *Server) createRoutes() *fasthttprouter.Router {
 	router := fasthttprouter.New()
 	router.GET("/ping", s.createHandler(endpoints.Ping))
 	router.POST("/users", s.createHandler(endpoints.CreateUser))
+	router.POST("/games", s.createAuthHandler(endpoints.CreateGame))
 	return router
 }
 
 func (s *Server) createHandler(realHandler func(*fasthttp.RequestCtx, *state.State)) func(*fasthttp.RequestCtx) {
 	return func(ctx *fasthttp.RequestCtx) {
 		realHandler(ctx, s.State)
+	}
+}
+
+func (s *Server) createAuthHandler(realHandler func(*fasthttp.RequestCtx, *user.User, *state.State)) func(*fasthttp.RequestCtx) {
+	return func(ctx *fasthttp.RequestCtx) {
+		val := ctx.Request.Header.Peek("X-ApiKey")
+		if val == nil {
+			ctx.SetContentType("text/plain")
+			ctx.SetStatusCode(fasthttp.StatusUnauthorized)
+			return
+		}
+		u := s.State.FindByAPIKey(string(val))
+		if u == nil {
+			ctx.SetContentType("text/plain")
+			ctx.SetStatusCode(fasthttp.StatusUnauthorized)
+			return
+		}
+		realHandler(ctx, u, s.State)
 	}
 }

@@ -5,7 +5,9 @@ import (
 )
 
 func TestPing(t *testing.T) {
-	_, result, res, err := runGet(t, "ping")
+	s, _, url := newServer(t)
+
+	result, res, err := runGet(t, url, "ping", map[string]string{})
 	if err != nil {
 		t.Fatal("Unexpected error:", err.Error())
 	}
@@ -21,4 +23,6 @@ func TestPing(t *testing.T) {
 	if result != "PONG" {
 		t.Fatal("Unexpected result:", result)
 	}
+
+	s.Stop()
 }

@@ -5,7 +5,10 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	server, result, res, err := runPost(t, "users", "{}")
+	s, _, url := newServer(t)
+
+	result, res, err := runPost(t, url, "users", map[string]string{}, "{}")
+
 	if err != nil {
 		t.Fatal("Unexpected error:", err.Error())
 	}
@@ -26,11 +29,11 @@ func TestCreateUser(t *testing.T) {
 	}
 
 	// Assert that the server now knows about this new user.
-	if len(server.State.Users) != 1 {
-		t.Fatal("Unexpected number of users:", len(server.State.Users))
+	if len(s.State.Users) != 1 {
+		t.Fatal("Unexpected number of users:", len(s.State.Users))
 	}
 
-	if server.State.Users[1].JSON() != expected {
-		t.Fatal("Unexpected state:", server.State.Users[1])
+	if s.State.Users[1].JSON() != expected {
+		t.Fatal("Unexpected state:", s.State.Users[1])
 	}
 }

@@ -27,42 +27,44 @@ func newServer(t *testing.T) (*Server, int, string) {
 	return s, p, url
 }
 
-func runGet(t *testing.T, endpoint string) (*Server, string, *http.Response, error) {
-	return runRequest(t, "get", endpoint, "")
+func runGet(t *testing.T, baseURL string, endpoint string, headers map[string]string) (string, *http.Response, error) {
+	return runRequest(t, baseURL, "GET", endpoint, headers, "")
 }
 
-func runPost(t *testing.T, endpoint string, body string) (*Server, string, *http.Response, error) {
-	return runRequest(t, "post", endpoint, body)
+func runPost(t *testing.T, baseURL string, endpoint string, headers map[string]string, body string) (string, *http.Response, error) {
+	return runRequest(t, baseURL, "POST", endpoint, headers, body)
 }
 
-func runRequest(t *testing.T, method string, endpoint string, body string) (*Server, string, *http.Response, error) {
-	s, _, url := newServer(t)
+func runRequest(t *testing.T, baseURL string, method string, endpoint string, headers map[string]string, body string) (string, *http.Response, error) {
 	var res *http.Response
 	var err error
 
-	reqURL := fmt.Sprintf("%s/%s", url, endpoint)
+	reqURL := fmt.Sprintf("%s/%s", baseURL, endpoint)
 
-	switch method {
-	case "get":
-		res, err = http.Get(reqURL)
-	case "post":
-		res, err = http.Post(reqURL, "application/json", strings.NewReader(body))
+	client := &http.Client{}
+	req, err := http.NewRequest(method, reqURL, strings.NewReader(body))
+
+	for k, v := range headers {
+		req.Header.Add(k, v)
 	}
 
+	if method == "post" {
+		req.Header.Add("Content-Type", "application/json")
+	}
+
+	res, err = client.Do(req)
 	if err != nil {
 		t.Fatal("Unexpected error:", err.Error())
 	}
 
 	byteValue, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		s.Stop()
-		return s, "", res, err
+		return "", res, err
 	}
 	res.Body.Close()
 
 	result := string(byteValue)
-	s.Stop()
-	return s, result, res, nil
+	return result, res, nil
 }
 
 func TestErrorOnListen(t *testing.T) {
@@ -98,4 +100,40 @@ func TestListenServerAndShutdown(t *testing.T) {
 	if err == nil {
 		t.Fatal("Expected an error")
 	}
+}
+
+func TestAuthErrorIfMissingAuthHeader(t *testing.T) {
+	s, _, url := newServer(t)
+
+	_, res, _ := runPost(t, url, "games", map[string]string{}, "{}")
+	if res.StatusCode != 401 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+
+	s.Stop()
+}
+
+func TestAuthErrorIfUserNotfound(t *testing.T) {
+	s, _, url := newServer(t)
+
+	_, res, _ := runPost(t, url, "games", map[string]string{"X-ApiKey": "whatever"}, "{}")
+	if res.StatusCode != 401 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+
+	s.Stop()
+}
+
+func TestAuth(t *testing.T) {
+	s, _, url := newServer(t)
+
+	u := s.State.AddUser()
+
+	_, res, _ := runPost(t, url, "games", map[string]string{"X-ApiKey": u.APIKey}, "{}")
+
+	if res.StatusCode != 201 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+
+	s.Stop()
 }

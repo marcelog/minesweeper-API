@@ -4,13 +4,11 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/marcelog/minesweeper-API/state"
-	"github.com/marcelog/minesweeper-API/user"
 )
 
 // CreateUser handles POST /users
 func CreateUser(ctx *fasthttp.RequestCtx, state *state.State) {
-	u := user.New()
-	state.AddUser(u)
+	u := state.AddUser()
 	ctx.SetContentType("application/json")
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 	ctx.SetBody([]byte(u.JSON()))

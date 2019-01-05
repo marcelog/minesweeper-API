@@ -5,8 +5,6 @@ import (
 	"fmt"
 )
 
-var id = 1
-
 // User represents a user (player).
 type User struct {
 	ID     int    `json:"id"`
@@ -14,12 +12,10 @@ type User struct {
 }
 
 // New creates a new user.
-func New() *User {
-	newID := id
-	id++
+func New(id int) *User {
 	return &User{
-		ID:     newID,
-		APIKey: fmt.Sprintf("apikey_%d", newID),
+		ID:     id,
+		APIKey: fmt.Sprintf("apikey_%d", id),
 	}
 }
 
