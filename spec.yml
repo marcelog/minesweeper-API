@@ -9,6 +9,18 @@ servers:
     description: Main server
 
 paths:
+  /ping:
+    get:
+      summary: Just pings the server for availability
+      description: Ping & Pong
+      response:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: PONG
   /users:
     post:
       summary: Creates a new user
