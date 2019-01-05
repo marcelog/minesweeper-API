@@ -129,7 +129,7 @@ func TestAuth(t *testing.T) {
 
 	u := s.State.AddUser()
 
-	_, res, _ := runPost(t, url, "games", map[string]string{"X-ApiKey": u.APIKey}, "{}")
+	_, res, _ := runPost(t, url, "games", map[string]string{"X-API-Key": u.APIKey}, "{}")
 
 	if res.StatusCode != 201 {
 		t.Fatal("Unexpected status code:", res.StatusCode)

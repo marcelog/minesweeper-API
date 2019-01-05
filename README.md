@@ -26,3 +26,7 @@ After building the server (see above), just run either of:
 ## API Docs
 See [spec.yml](https://github.com/marcelog/minesweeper-API/blob/master/spec.yml)
 which is in [Swagger](https://swagger.io) format.
+
+## Basics
+* Create a user by `POST`ing to `/users`. You get your user id and api key.
+* Use the api key to authenticate to any protected endpoints by sending your api key in the `X-API-Key` header.

@@ -97,7 +97,7 @@ func (s *Server) createHandler(realHandler func(*fasthttp.RequestCtx, *state.Sta
 
 func (s *Server) createAuthHandler(realHandler func(*fasthttp.RequestCtx, *user.User, *state.State)) func(*fasthttp.RequestCtx) {
 	return func(ctx *fasthttp.RequestCtx) {
-		val := ctx.Request.Header.Peek("X-ApiKey")
+		val := ctx.Request.Header.Peek("X-API-Key")
 		if val == nil {
 			ctx.SetContentType("text/plain")
 			ctx.SetStatusCode(fasthttp.StatusUnauthorized)

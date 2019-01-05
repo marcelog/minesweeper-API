@@ -33,7 +33,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 
+  /games:
+    post:
+      summary: Creates a new game
+      description: With your user, you can create new games
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '401':
+          description: Authorization information is missing or invalid.
+
+        '201':
+          description: A JSON object describing the new game properties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
   schemas:
     User:
       type: object
