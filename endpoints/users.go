@@ -7,9 +7,11 @@ import (
 )
 
 // CreateUser handles POST /users
-func CreateUser(ctx *fasthttp.RequestCtx, state *state.State) {
+func CreateUser(ctx *fasthttp.RequestCtx, state *state.State) error {
 	u := state.AddUser()
 	ctx.SetContentType("application/json")
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 	ctx.SetBody([]byte(u.JSON()))
+
+	return nil
 }

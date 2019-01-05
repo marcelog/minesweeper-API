@@ -39,6 +39,13 @@ paths:
       description: With your user, you can create new games
       security:
         - ApiKeyAuth: []
+      requestBody:
+        description: Game parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameCreationDto'
       responses:
         '401':
           description: Authorization information is missing or invalid.
@@ -58,6 +65,28 @@ components:
       name: X-API-Key
 
   schemas:
+    GameCreationDto:
+      type: object
+      properties:
+        width:
+          type: integer
+          description: Board width
+          minimum: 8
+          maximum: 64
+        height:
+          type: integer
+          description: Board height
+          minimum: 8
+          maximum: 64
+        mines:
+          type: integer
+          description: How many mines to setup in the board. Limited to 50% of the board.
+          minimum: 1
+    Error:
+      type: object
+      properties:
+        message: string
+        description: The error message
     User:
       type: object
       properties:

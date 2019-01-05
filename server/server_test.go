@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,6 +12,13 @@ import (
 )
 
 var port = 8000
+
+func assertErrorMessage(t *testing.T, result string, expected string) {
+	m, _ := json.Marshal(map[string]string{"message": expected})
+	if result != string(m) {
+		t.Fatal("Unexpected result:", result)
+	}
+}
 
 func authHeader(u *user.User) map[string]string {
 	return map[string]string{"X-API-Key": u.APIKey}
@@ -135,7 +143,7 @@ func TestAuth(t *testing.T) {
 
 	u := s.State.AddUser()
 
-	_, res, _ := runPost(t, url, "games", authHeader(u), "{}")
+	_, res, _ := runPost(t, url, "games", authHeader(u), `{"width": 8, "height": 8, "mines": 1}`)
 
 	if res.StatusCode != 201 {
 		t.Fatal("Unexpected status code:", res.StatusCode)

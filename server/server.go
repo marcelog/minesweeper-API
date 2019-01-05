@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -11,6 +12,10 @@ import (
 	"github.com/marcelog/minesweeper-API/state"
 	"github.com/marcelog/minesweeper-API/user"
 )
+
+type reqError struct {
+	Message string `json:"message"`
+}
 
 // IServer is a generic interface to servers.
 type IServer interface {
@@ -89,13 +94,15 @@ func (s *Server) createRoutes() *fasthttprouter.Router {
 	return router
 }
 
-func (s *Server) createHandler(realHandler func(*fasthttp.RequestCtx, *state.State)) func(*fasthttp.RequestCtx) {
+func (s *Server) createHandler(realHandler func(*fasthttp.RequestCtx, *state.State) error) func(*fasthttp.RequestCtx) {
 	return func(ctx *fasthttp.RequestCtx) {
-		realHandler(ctx, s.State)
+		if err := realHandler(ctx, s.State); err != nil {
+			s.sendReqError(ctx, err)
+		}
 	}
 }
 
-func (s *Server) createAuthHandler(realHandler func(*fasthttp.RequestCtx, *user.User, *state.State)) func(*fasthttp.RequestCtx) {
+func (s *Server) createAuthHandler(realHandler func(*fasthttp.RequestCtx, *user.User, *state.State) error) func(*fasthttp.RequestCtx) {
 	return func(ctx *fasthttp.RequestCtx) {
 		val := ctx.Request.Header.Peek("X-API-Key")
 		if val == nil {
@@ -109,6 +116,17 @@ func (s *Server) createAuthHandler(realHandler func(*fasthttp.RequestCtx, *user.
 			ctx.SetStatusCode(fasthttp.StatusUnauthorized)
 			return
 		}
-		realHandler(ctx, u, s.State)
+		if err := realHandler(ctx, u, s.State); err != nil {
+			s.sendReqError(ctx, err)
+		}
 	}
+}
+
+func (s *Server) sendReqError(ctx *fasthttp.RequestCtx, e error) {
+	ctx.SetContentType("application/json")
+	ctx.SetStatusCode(fasthttp.StatusBadRequest)
+	j, _ := json.Marshal(&reqError{
+		Message: e.Error(),
+	})
+	ctx.SetBody(j)
 }

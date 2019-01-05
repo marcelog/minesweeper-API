@@ -7,7 +7,8 @@ import (
 )
 
 // Ping handles GET /ping
-func Ping(ctx *fasthttp.RequestCtx, state *state.State) {
+func Ping(ctx *fasthttp.RequestCtx, state *state.State) error {
 	ctx.SetContentType("text/plain")
 	ctx.SetBody([]byte("PONG"))
+	return nil
 }
