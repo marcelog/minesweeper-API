@@ -6,8 +6,8 @@ import (
 	"github.com/marcelog/minesweeper-API/state"
 )
 
-// Ping handles GET /ping
-func Ping(ctx *fasthttp.RequestCtx, state *state.State) {
-	ctx.SetContentType("text/plain")
+// CreateUser handles POST /users
+func CreateUser(ctx *fasthttp.RequestCtx, state *state.State) {
+	ctx.SetContentType("application/json")
 	ctx.SetBody([]byte("PONG"))
 }

@@ -2,10 +2,13 @@ package server
 
 import (
 	"fmt"
-	"github.com/buaazp/fasthttprouter"
-	"github.com/marcelog/minesweeper-API/endpoints"
-	"github.com/valyala/fasthttp"
 	"time"
+
+	"github.com/buaazp/fasthttprouter"
+	"github.com/valyala/fasthttp"
+
+	"github.com/marcelog/minesweeper-API/endpoints"
+	"github.com/marcelog/minesweeper-API/state"
 )
 
 // IServer is a generic interface to servers.
@@ -24,12 +27,14 @@ type Args struct {
 type Server struct {
 	args   *Args
 	server *fasthttp.Server
+	state  *state.State
 }
 
 // New returns a new *Server.
 func New(args *Args) *Server {
 	return &Server{
-		args: args,
+		args:  args,
+		state: state.New(),
 	}
 }
 
@@ -77,7 +82,13 @@ func (s *Server) Stop() {
 
 func (s *Server) createRoutes() *fasthttprouter.Router {
 	router := fasthttprouter.New()
-	router.GET("/ping", endpoints.Ping)
-
+	router.GET("/ping", s.createHandler(endpoints.Ping))
+	router.POST("/users", s.createHandler(endpoints.CreateUser))
 	return router
+}
+
+func (s *Server) createHandler(realHandler func(*fasthttp.RequestCtx, *state.State)) func(*fasthttp.RequestCtx) {
+	return func(ctx *fasthttp.RequestCtx) {
+		realHandler(ctx, s.state)
+	}
 }
