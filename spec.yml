@@ -26,7 +26,7 @@ paths:
       summary: Creates a new user
       description: If you're new to the system, start here
       responses:
-        '200':
+        '201':
           description: A JSON object describing the new user properties
           content:
             application/json:

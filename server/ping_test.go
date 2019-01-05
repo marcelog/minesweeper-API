@@ -10,6 +10,10 @@ func TestPing(t *testing.T) {
 		t.Fatal("Unexpected error:", err.Error())
 	}
 
+	if res.StatusCode != 200 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+
 	if res.Header["Content-Type"][0] != "text/plain" {
 		t.Fatal("Unexpected content type:", res.Header["Content-Type"])
 	}

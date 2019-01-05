@@ -12,5 +12,6 @@ func CreateUser(ctx *fasthttp.RequestCtx, state *state.State) {
 	u := user.New()
 	state.AddUser(u)
 	ctx.SetContentType("application/json")
+	ctx.SetStatusCode(fasthttp.StatusCreated)
 	ctx.SetBody([]byte(u.JSON()))
 }
