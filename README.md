@@ -22,3 +22,7 @@ After building the server (see above), just run either of:
 
 * build/minesweeper-API-linux
 * build/minesweeper-API-darwin
+
+## API Docs
+See [spec.yml](https://github.com/marcelog/minesweeper-API/blob/master/spec.yml)
+which is in [Swagger](https://swagger.io) format.
