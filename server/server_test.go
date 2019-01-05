@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"testing"
 )
 
@@ -26,9 +27,28 @@ func newServer(t *testing.T) (*Server, int, string) {
 	return s, p, url
 }
 
-func runRequest(t *testing.T, endpoint string) (string, *http.Response, error) {
+func runGet(t *testing.T, endpoint string) (*Server, string, *http.Response, error) {
+	return runRequest(t, "get", endpoint, "")
+}
+
+func runPost(t *testing.T, endpoint string, body string) (*Server, string, *http.Response, error) {
+	return runRequest(t, "post", endpoint, body)
+}
+
+func runRequest(t *testing.T, method string, endpoint string, body string) (*Server, string, *http.Response, error) {
 	s, _, url := newServer(t)
-	res, err := http.Get(fmt.Sprintf("%s/%s", url, endpoint))
+	var res *http.Response
+	var err error
+
+	reqURL := fmt.Sprintf("%s/%s", url, endpoint)
+
+	switch method {
+	case "get":
+		res, err = http.Get(reqURL)
+	case "post":
+		res, err = http.Post(reqURL, "application/json", strings.NewReader(body))
+	}
+
 	if err != nil {
 		t.Fatal("Unexpected error:", err.Error())
 	}
@@ -36,13 +56,13 @@ func runRequest(t *testing.T, endpoint string) (string, *http.Response, error) {
 	byteValue, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		s.Stop()
-		return "", res, err
+		return s, "", res, err
 	}
 	res.Body.Close()
 
 	result := string(byteValue)
 	s.Stop()
-	return result, res, nil
+	return s, result, res, nil
 }
 
 func TestErrorOnListen(t *testing.T) {

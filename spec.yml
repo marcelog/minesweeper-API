@@ -13,7 +13,7 @@ paths:
     get:
       summary: Just pings the server for availability
       description: Ping & Pong
-      response:
+      responses:
         '200':
           description: Success
           content:
@@ -31,6 +31,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  type: string
+                $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The user ID.
+        api_key:
+          type: string
+          description: The api key for this user.

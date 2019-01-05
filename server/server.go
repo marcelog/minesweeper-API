@@ -27,14 +27,14 @@ type Args struct {
 type Server struct {
 	args   *Args
 	server *fasthttp.Server
-	state  *state.State
+	State  *state.State
 }
 
 // New returns a new *Server.
 func New(args *Args) *Server {
 	return &Server{
 		args:  args,
-		state: state.New(),
+		State: state.New(),
 	}
 }
 
@@ -89,6 +89,6 @@ func (s *Server) createRoutes() *fasthttprouter.Router {
 
 func (s *Server) createHandler(realHandler func(*fasthttp.RequestCtx, *state.State)) func(*fasthttp.RequestCtx) {
 	return func(ctx *fasthttp.RequestCtx) {
-		realHandler(ctx, s.state)
+		realHandler(ctx, s.State)
 	}
 }

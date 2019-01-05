@@ -4,7 +4,7 @@ GOFMT := $(shell which gofmt)
 TARGETS = linux darwin
 BUILD_DIR = build
 PACKAGES := $(shell find . -maxdepth 1 -type d | grep -v -E 'vendor|\.git|build' | tr -d './')
-COVERED_PKGS = github.com/marcelog/minesweeper-API/endpoints,github.com/marcelog/minesweeper-API/server
+COVERED_PKGS = github.com/marcelog/minesweeper-API/endpoints,github.com/marcelog/minesweeper-API/server,github.com/marcelog/minesweeper-API/user,github.com/marcelog/minesweeper-API/state
 
 all: clean prepare vet lint format test build show_coverage
 
