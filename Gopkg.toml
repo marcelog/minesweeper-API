@@ -24,6 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[constraint]]
+  name = "github.com/valyala/fasthttp"
+  revision = "1d2d99cba311e04b8d58f5d113ee07086c3e64f6"
 
 [prune]
   go-tests = true
