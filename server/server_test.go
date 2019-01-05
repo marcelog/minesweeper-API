@@ -116,7 +116,7 @@ func TestAuthErrorIfMissingAuthHeader(t *testing.T) {
 func TestAuthErrorIfUserNotfound(t *testing.T) {
 	s, _, url := newServer(t)
 
-	_, res, _ := runPost(t, url, "games", map[string]string{"X-ApiKey": "whatever"}, "{}")
+	_, res, _ := runPost(t, url, "games", map[string]string{"X-API-Key": "whatever"}, "{}")
 	if res.StatusCode != 401 {
 		t.Fatal("Unexpected status code:", res.StatusCode)
 	}
