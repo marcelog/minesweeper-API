@@ -48,7 +48,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Game'
 
 components:
   securitySchemes:
@@ -67,3 +67,9 @@ components:
         api_key:
           type: string
           description: The api key for this user.
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The game ID.

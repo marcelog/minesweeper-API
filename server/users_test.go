@@ -13,16 +13,16 @@ func TestCreateUser(t *testing.T) {
 		t.Fatal("Unexpected error:", err.Error())
 	}
 
+	// Assert we get the right json payload & status code.
+	if res.StatusCode != 201 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+
 	if res.Header["Content-Type"][0] != "application/json" {
 		t.Fatal("Unexpected content type:", res.Header["Content-Type"])
 	}
 
 	expected := "{\"id\":1,\"api_key\":\"apikey_1\"}"
-
-	// Assert we get the right json payload & status code.
-	if res.StatusCode != 201 {
-		t.Fatal("Unexpected status code:", res.StatusCode)
-	}
 
 	if result != expected {
 		t.Fatal("Unexpected result:", result)

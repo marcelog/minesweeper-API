@@ -7,7 +7,7 @@ import (
 // Game represents a game.
 type Game struct {
 	ID      int `json:"id"`
-	OwnerID int `json:"owner_id"`
+	OwnerID int `json:"-"`
 }
 
 // New creates a new game.

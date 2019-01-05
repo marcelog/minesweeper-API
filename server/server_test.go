@@ -6,9 +6,15 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/marcelog/minesweeper-API/user"
 )
 
 var port = 8000
+
+func authHeader(u *user.User) map[string]string {
+	return map[string]string{"X-API-Key": u.APIKey}
+}
 
 func newServer(t *testing.T) (*Server, int, string) {
 	p := port
@@ -129,7 +135,7 @@ func TestAuth(t *testing.T) {
 
 	u := s.State.AddUser()
 
-	_, res, _ := runPost(t, url, "games", map[string]string{"X-API-Key": u.APIKey}, "{}")
+	_, res, _ := runPost(t, url, "games", authHeader(u), "{}")
 
 	if res.StatusCode != 201 {
 		t.Fatal("Unexpected status code:", res.StatusCode)
