@@ -15,39 +15,6 @@ func TestCantCreateGameWithInvalidParams(t *testing.T) {
 		t.Fatal("Unexpected status code:", res.StatusCode)
 	}
 	assertErrorMessage(t, result, "width too high")
-
-	result, res, _ = runPost(t, url, "games", authHeader(u), `{"width": 7, "height": 8, "mines": 1}`)
-	if res.StatusCode != 400 {
-		t.Fatal("Unexpected status code:", res.StatusCode)
-	}
-	assertErrorMessage(t, result, "width too low")
-
-	// Bad height
-	result, res, _ = runPost(t, url, "games", authHeader(u), `{"width": 8, "height": 65, "mines": 1}`)
-	if res.StatusCode != 400 {
-		t.Fatal("Unexpected status code:", res.StatusCode)
-	}
-	assertErrorMessage(t, result, "height too high")
-
-	result, res, _ = runPost(t, url, "games", authHeader(u), `{"width": 8, "height": 7, "mines": 1}`)
-	if res.StatusCode != 400 {
-		t.Fatal("Unexpected status code:", res.StatusCode)
-	}
-	assertErrorMessage(t, result, "height too low")
-
-	// Bad # of mines
-	result, res, _ = runPost(t, url, "games", authHeader(u), `{"width": 8, "height": 8, "mines": 0}`)
-	if res.StatusCode != 400 {
-		t.Fatal("Unexpected status code:", res.StatusCode)
-	}
-	assertErrorMessage(t, result, "mine number too low")
-
-	result, res, _ = runPost(t, url, "games", authHeader(u), `{"width": 8, "height": 8, "mines": 33}`)
-	if res.StatusCode != 400 {
-		t.Fatal("Unexpected status code:", res.StatusCode)
-	}
-	assertErrorMessage(t, result, "mine number too high")
-
 	s.Stop()
 }
 
