@@ -84,7 +84,7 @@ func TestCreateGame(t *testing.T) {
 		t.Fatal("Unexpected content type:", res.Header["Content-Type"])
 	}
 
-	expected := `{"id":1,"width":8,"height":8,"mines":1}`
+	expected := `{"id":1,"width":8,"height":8,"mines":1,"state":"started"}`
 
 	if result != expected {
 		t.Fatal("Unexpected result:", result)

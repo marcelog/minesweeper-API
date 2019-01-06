@@ -8,13 +8,13 @@ import (
 
 const (
 	// GameStarted the game is started
-	GameStarted = 0
+	GameStarted = "started"
 
 	// GameLost terminal state, the player lost
-	GameLost = 1
+	GameLost = "lost"
 
 	// GameWon terminal state, the player won
-	GameWon = 2
+	GameWon = "won"
 )
 
 const (
@@ -59,6 +59,7 @@ type Game struct {
 	Width      int          `json:"width"`
 	Height     int          `json:"height"`
 	TotalMines int          `json:"mines"`
+	State      string       `json:"state"`
 	Board      []int        `json:"-"`
 	Mines      map[int]bool `json:"-"` // Mines location, key is an int, cell number.
 }
@@ -75,6 +76,7 @@ func New(id int, ownerID int, width int, height int, mines int) *Game {
 		TotalMines: mines,
 		Board:      make([]int, totalCells),
 		Mines:      map[int]bool{},
+		State:      GameStarted,
 	}
 
 	// Initialize board
