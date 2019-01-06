@@ -60,7 +60,7 @@ type Game struct {
 	Height     int          `json:"height"`
 	TotalMines int          `json:"mines"`
 	State      string       `json:"state"`
-	Board      []int        `json:"-"`
+	Board      []int        `json:"board"`
 	Mines      map[int]bool `json:"-"` // Mines location, key is an int, cell number.
 }
 
