@@ -63,6 +63,7 @@ type Game struct {
 	State      string       `json:"state"`
 	Board      []int        `json:"board"`
 	Mines      map[int]bool `json:"-"` // Mines location, key is an int, cell number.
+	totalCells int
 }
 
 // New creates a new game.
@@ -102,10 +103,11 @@ func New(id int, ownerID int, width int, height int, mines int) (*Game, error) {
 		Board:      make([]int, totalCells),
 		Mines:      map[int]bool{},
 		State:      GameStarted,
+		totalCells: totalCells,
 	}
 
 	// Initialize board
-	for i := 0; i < totalCells; i++ {
+	for i := 0; i < g.totalCells; i++ {
 		g.Board[i] = CellUnvisited
 	}
 
@@ -117,7 +119,7 @@ func New(id int, ownerID int, width int, height int, mines int) (*Game, error) {
 	for i := 0; i < mines; i++ {
 		// We loop here to avoid duplicated cell numbers.
 		for true {
-			cell := r.Intn(totalCells)
+			cell := r.Intn(g.totalCells)
 			if _, ok := g.Mines[cell]; !ok {
 				g.Mines[cell] = true
 				break
@@ -125,6 +127,28 @@ func New(id int, ownerID int, width int, height int, mines int) (*Game, error) {
 		}
 	}
 	return g, nil
+}
+
+// Flag flags a cell.
+func (g *Game) Flag(cell int) error {
+	if cell < 0 || cell >= g.totalCells {
+		return errors.New("invalid cell")
+	}
+	if g.State != GameStarted {
+		return errors.New("game has finished")
+	}
+	return nil
+}
+
+// Unflag removes the flag from a cell.
+func (g *Game) Unflag(cell int) error {
+	if cell < 0 || cell >= g.totalCells {
+		return errors.New("invalid cell")
+	}
+	if g.State != GameStarted {
+		return errors.New("game has finished")
+	}
+	return nil
 }
 
 // JSON serializes this user as a json string.

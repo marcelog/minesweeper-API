@@ -35,3 +35,13 @@ func CreateGame(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) erro
 
 	return nil
 }
+
+// FlagCell handles POST /games/:game_id/cells/:cell_id/flag
+func FlagCell(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) error {
+	return nil
+}
+
+// UnflagCell handles DELETE /games/:game_id/cells/:cell_id/flag
+func UnflagCell(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) error {
+	return nil
+}

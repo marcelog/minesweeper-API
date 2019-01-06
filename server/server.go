@@ -91,6 +91,8 @@ func (s *Server) createRoutes() *fasthttprouter.Router {
 	router.GET("/ping", s.createHandler(endpoints.Ping))
 	router.POST("/users", s.createHandler(endpoints.CreateUser))
 	router.POST("/games", s.createAuthHandler(endpoints.CreateGame))
+	router.POST("/games/:game_id/cells/:cell_id/flag", s.createAuthHandler(endpoints.FlagCell))
+	router.DELETE("/games/:game_id/cells/:cell_id/flag", s.createAuthHandler(endpoints.UnflagCell))
 	return router
 }
 
