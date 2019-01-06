@@ -75,3 +75,69 @@ func TestErrorWithInvalidNumberOfMines(t *testing.T) {
 		t.Fatal("Unexpected error:", err.Error())
 	}
 }
+
+func TestErrorFlaggingInvalidCell(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 1)
+
+	err := g.Flag(-1)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+	if err.Error() != "invalid cell" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+
+	err = g.Flag(65)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+	if err.Error() != "invalid cell" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+}
+
+func TestErrorFlaggingInvalidGameState(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 1)
+	g.State = GameLost
+
+	err := g.Flag(5)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+	if err.Error() != "game has finished" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+}
+
+func TestErrorUnflaggingInvalidCell(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 1)
+
+	err := g.Unflag(-1)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+	if err.Error() != "invalid cell" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+
+	err = g.Unflag(65)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+	if err.Error() != "invalid cell" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+}
+
+func TestErrorUnflaggingInvalidGameState(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 1)
+	g.State = GameLost
+
+	err := g.Unflag(5)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+	if err.Error() != "game has finished" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+}

@@ -134,7 +134,7 @@ func (g *Game) Flag(cell int) error {
 	if cell < 0 || cell >= g.totalCells {
 		return errors.New("invalid cell")
 	}
-	if g.State != GameStarted {
+	if g.IsFinished() {
 		return errors.New("game has finished")
 	}
 	if g.Board[cell] != CellFlagged && g.Board[cell] != CellUnvisited {
@@ -149,7 +149,7 @@ func (g *Game) Unflag(cell int) error {
 	if cell < 0 || cell >= g.totalCells {
 		return errors.New("invalid cell")
 	}
-	if g.State != GameStarted {
+	if g.IsFinished() {
 		return errors.New("game has finished")
 	}
 	if g.Board[cell] != CellFlagged && g.Board[cell] != CellUnvisited {
@@ -157,6 +157,11 @@ func (g *Game) Unflag(cell int) error {
 	}
 	g.Board[cell] = CellUnvisited
 	return nil
+}
+
+// IsFinished returns true if the game has finished.
+func (g *Game) IsFinished() bool {
+	return g.State == GameLost || g.State == GameWon
 }
 
 // JSON serializes this user as a json string.
