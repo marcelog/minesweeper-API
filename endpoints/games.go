@@ -2,7 +2,6 @@ package endpoints
 
 import (
 	"encoding/json"
-	"errors"
 
 	"github.com/valyala/fasthttp"
 
@@ -25,30 +24,11 @@ func CreateGame(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) erro
 		return err
 	}
 
-	// Arbitrary values.
-	if dto.Width < 8 {
-		return errors.New("width too low")
-	}
-	if dto.Width > 64 {
-		return errors.New("width too high")
+	g, err := state.AddGame(u, dto.Width, dto.Height, dto.Mines)
+	if err != nil {
+		return err
 	}
 
-	if dto.Height < 8 {
-		return errors.New("height too low")
-	}
-	if dto.Height > 64 {
-		return errors.New("height too high")
-	}
-	// At least 1 mine and less than 51% of cells with mines.
-	if dto.Mines < 1 {
-		return errors.New("mine number too low")
-	}
-
-	if dto.Mines > ((dto.Width * dto.Height) / 2) {
-		return errors.New("mine number too high")
-	}
-
-	g := state.AddGame(u, dto.Width, dto.Height, dto.Mines)
 	ctx.SetContentType("application/json")
 	ctx.SetStatusCode(fasthttp.StatusCreated)
 	ctx.SetBody([]byte(g.JSON()))

@@ -2,6 +2,7 @@ package game
 
 import (
 	"encoding/json"
+	"errors"
 	"math/rand"
 	"time"
 )
@@ -65,7 +66,31 @@ type Game struct {
 }
 
 // New creates a new game.
-func New(id int, ownerID int, width int, height int, mines int) *Game {
+func New(id int, ownerID int, width int, height int, mines int) (*Game, error) {
+	// Arbitrary values.
+	if width < 8 {
+		return nil, errors.New("width too low")
+	}
+	if width > 64 {
+		return nil, errors.New("width too high")
+	}
+
+	if height < 8 {
+		return nil, errors.New("height too low")
+	}
+
+	if height > 64 {
+		return nil, errors.New("height too high")
+	}
+	// At least 1 mine and less than 51% of cells with mines.
+	if mines < 1 {
+		return nil, errors.New("mine number too low")
+	}
+
+	if mines > ((width * height) / 2) {
+		return nil, errors.New("mine number too high")
+	}
+
 	totalCells := width * height
 
 	g := &Game{
@@ -99,7 +124,7 @@ func New(id int, ownerID int, width int, height int, mines int) *Game {
 			}
 		}
 	}
-	return g
+	return g, nil
 }
 
 // JSON serializes this user as a json string.
