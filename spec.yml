@@ -88,12 +88,18 @@ components:
           type: integer
           description: How many mines to setup in the board. Limited to 50% of the board.
           minimum: 1
+      required:
+        - width
+        - height
+        - mines
     Error:
       type: object
       properties:
         message:
           type: string
           description: The error message
+      required:
+        - message
     User:
       type: object
       properties:
@@ -103,6 +109,9 @@ components:
         api_key:
           type: string
           description: The api key for this user.
+      required:
+        - id
+        - api_key
     Game:
       type: object
       properties:
@@ -130,3 +139,84 @@ components:
             - started
             - won
             - lost
+        board:
+          type: array
+          description: The board
+          items:
+            $ref: '#/components/schemas/BoardCell'
+      required:
+        - id
+        - width
+        - height
+        - mines
+        - state
+        - board
+    BoardCell:
+      type: integer
+      enum:
+        - '#/components/schemas/CellUnvisited'
+        - '#/components/schemas/CellAdjMines0'
+        - '#/components/schemas/CellAdjMines1'
+        - '#/components/schemas/CellAdjMines2'
+        - '#/components/schemas/CellAdjMines3'
+        - '#/components/schemas/CellAdjMines4'
+        - '#/components/schemas/CellAdjMines5'
+        - '#/components/schemas/CellAdjMines6'
+        - '#/components/schemas/CellAdjMines7'
+        - '#/components/schemas/CellAdjMines8'
+        - '#/components/schemas/CellFlagged'
+    CellUnvisited:
+      type: integer
+      description: A cell that hasn't been visited or flagged yet
+      minimum: 0
+      maximum: 0
+    CellAdjMines0:
+      type: integer
+      description: A cell with 0 adjacent mines (i.e visited)
+      minimum: 1
+      maximum: 1
+    CellAdjMines1:
+      type: integer
+      description: A cell with 1 adjacent mine
+      minimum: 2
+      maximum: 2
+    CellAdjMines2:
+      type: integer
+      description: A cell with 2 adjacent mines
+      minimum: 3
+      maximum: 3
+    CellAdjMines3:
+      type: integer
+      description: A cell with 3 adjacent mines
+      minimum: 4
+      maximum: 4
+    CellAdjMines4:
+      type: integer
+      description: A cell with 4 adjacent mines
+      minimum: 5
+      maximum: 5
+    CellAdjMines5:
+      type: integer
+      description: A cell with 5 adjacent mines
+      minimum: 6
+      maximum: 6
+    CellAdjMines6:
+      type: integer
+      description: A cell with 6 adjacent mines
+      minimum: 7
+      maximum: 7
+    CellAdjMines7:
+      type: integer
+      description: A cell with 7 adjacent mines
+      minimum: 8
+      maximum: 8
+    CellAdjMines8:
+      type: integer
+      description: A cell with 8 adjacent mines
+      minimum: 9
+      maximum: 9
+    CellFlagged:
+      type: integer
+      description: A cell flagged by the user
+      minimum: 10
+      maximum: 10
