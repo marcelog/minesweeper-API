@@ -112,9 +112,21 @@ components:
         width:
           type: integer
           description: Board width
+          minimum: 8
+          maximum: 64
         height:
           type: integer
           description: Board height
+          minimum: 8
+          maximum: 64
         mines:
           type: integer
           description: How many mines to setup in the board. Limited to 50% of the board.
+          minimum: 1
+        state:
+          type: string
+          description: Game state
+          enum:
+            - started
+            - won
+            - lost
