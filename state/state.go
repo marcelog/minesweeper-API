@@ -42,12 +42,23 @@ func New() *State {
 	}
 }
 
-// FindByAPIKey returns a user (if found) with the given api key.
-func (s *State) FindByAPIKey(key string) *user.User {
+// FindUserByAPIKey returns a user (if found) with the given api key.
+func (s *State) FindUserByAPIKey(key string) *user.User {
 	for _, user := range s.Users {
 		if user.APIKey == key {
 			return user
 		}
 	}
 	return nil
+}
+
+// FindGame returns a game (if found) for the given owner and id.
+func (s *State) FindGame(owner *user.User, id int) *game.Game {
+	for _, game := range s.Games {
+		if game.OwnerID == owner.ID && game.ID == id {
+			return game
+		}
+	}
+	return nil
+
 }

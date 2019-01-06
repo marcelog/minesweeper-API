@@ -110,7 +110,7 @@ func (s *Server) createAuthHandler(realHandler func(*fasthttp.RequestCtx, *user.
 			ctx.SetStatusCode(fasthttp.StatusUnauthorized)
 			return
 		}
-		u := s.State.FindByAPIKey(string(val))
+		u := s.State.FindUserByAPIKey(string(val))
 		if u == nil {
 			ctx.SetContentType("text/plain")
 			ctx.SetStatusCode(fasthttp.StatusUnauthorized)

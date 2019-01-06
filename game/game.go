@@ -137,6 +137,10 @@ func (g *Game) Flag(cell int) error {
 	if g.State != GameStarted {
 		return errors.New("game has finished")
 	}
+	if g.Board[cell] != CellFlagged && g.Board[cell] != CellUnvisited {
+		return errors.New("cell in invalid state")
+	}
+	g.Board[cell] = CellFlagged
 	return nil
 }
 
@@ -148,6 +152,10 @@ func (g *Game) Unflag(cell int) error {
 	if g.State != GameStarted {
 		return errors.New("game has finished")
 	}
+	if g.Board[cell] != CellFlagged && g.Board[cell] != CellUnvisited {
+		return errors.New("cell in invalid state")
+	}
+	g.Board[cell] = CellUnvisited
 	return nil
 }
 
