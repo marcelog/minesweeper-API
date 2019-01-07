@@ -2,6 +2,8 @@ package endpoints
 
 import (
 	"encoding/json"
+	"errors"
+	"strconv"
 
 	"github.com/valyala/fasthttp"
 
@@ -38,10 +40,52 @@ func CreateGame(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) erro
 
 // FlagCell handles POST /games/:game_id/cells/:cell_id/flag
 func FlagCell(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) error {
-	return nil
+	gameIDStr, _ := ctx.UserValue("game_id").(string)
+	cellIDStr, _ := ctx.UserValue("cell_id").(string)
+
+	gameID, err := strconv.Atoi(gameIDStr)
+	if err != nil {
+		return errors.New("invalid game id")
+	}
+
+	cellID, err := strconv.Atoi(cellIDStr)
+	if err != nil {
+		return errors.New("invalid cell id")
+	}
+
+	game := state.FindGame(u, gameID)
+	if game == nil {
+		return notFound(ctx)
+	}
+
+	return game.Flag(cellID)
 }
 
 // UnflagCell handles DELETE /games/:game_id/cells/:cell_id/flag
 func UnflagCell(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) error {
+	gameIDStr, _ := ctx.UserValue("game_id").(string)
+	cellIDStr, _ := ctx.UserValue("cell_id").(string)
+
+	gameID, err := strconv.Atoi(gameIDStr)
+	if err != nil {
+		return errors.New("invalid game id")
+	}
+
+	cellID, err := strconv.Atoi(cellIDStr)
+	if err != nil {
+		return errors.New("invalid cell id")
+	}
+
+	game := state.FindGame(u, gameID)
+	if game == nil {
+		return notFound(ctx)
+	}
+
+	return game.Unflag(cellID)
+}
+
+func notFound(ctx *fasthttp.RequestCtx) error {
+	ctx.SetContentType("application/json")
+	ctx.SetStatusCode(fasthttp.StatusNotFound)
 	return nil
 }

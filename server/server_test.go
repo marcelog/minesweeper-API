@@ -49,6 +49,10 @@ func runPost(t *testing.T, baseURL string, endpoint string, headers map[string]s
 	return runRequest(t, baseURL, "POST", endpoint, headers, body)
 }
 
+func runDelete(t *testing.T, baseURL string, endpoint string, headers map[string]string, body string) (string, *http.Response, error) {
+	return runRequest(t, baseURL, "DELETE", endpoint, headers, body)
+}
+
 func runRequest(t *testing.T, baseURL string, method string, endpoint string, headers map[string]string, body string) (string, *http.Response, error) {
 	var res *http.Response
 	var err error

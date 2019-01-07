@@ -72,3 +72,81 @@ func TestCreateGame(t *testing.T) {
 
 	s.Stop()
 }
+
+func TestErrorFlaggingInvalidGameInt(t *testing.T) {
+	s, _, url := newServer(t)
+
+	u := s.State.AddUser()
+	result, res, _ := runPost(t, url, "games/blah/cells/3/flag", authHeader(u), "{}")
+	if res.StatusCode != 400 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+	assertErrorMessage(t, result, "invalid game id")
+	s.Stop()
+}
+
+func TestErrorFlaggingInvalidCellInt(t *testing.T) {
+	s, _, url := newServer(t)
+
+	u := s.State.AddUser()
+	result, res, _ := runPost(t, url, "games/3/cells/blah/flag", authHeader(u), "{}")
+	if res.StatusCode != 400 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+	assertErrorMessage(t, result, "invalid cell id")
+	s.Stop()
+}
+
+func TestErrorFlaggingUnknownGame(t *testing.T) {
+	s, _, url := newServer(t)
+
+	// Create a game with a user, try to use it from a different user.
+	u1 := s.State.AddUser()
+	u2 := s.State.AddUser()
+	runPost(t, url, "games", authHeader(u1), `{"width": 8, "height": 8, "mines": 1}`)
+
+	_, res, _ := runPost(t, url, "games/3/cells/3/flag", authHeader(u2), "{}")
+	if res.StatusCode != 404 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+	s.Stop()
+}
+
+func TestErrorUnflaggingInvalidGameInt(t *testing.T) {
+	s, _, url := newServer(t)
+
+	u := s.State.AddUser()
+	result, res, _ := runDelete(t, url, "games/blah/cells/3/flag", authHeader(u), "{}")
+	if res.StatusCode != 400 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+	assertErrorMessage(t, result, "invalid game id")
+	s.Stop()
+}
+
+func TestErrorUnflaggingInvalidCellInt(t *testing.T) {
+	s, _, url := newServer(t)
+
+	u := s.State.AddUser()
+	result, res, _ := runDelete(t, url, "games/3/cells/blah/flag", authHeader(u), "{}")
+	if res.StatusCode != 400 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+	assertErrorMessage(t, result, "invalid cell id")
+	s.Stop()
+}
+
+func TestErrorUnflaggingUnknownGame(t *testing.T) {
+	s, _, url := newServer(t)
+
+	// Create a game with a user, try to use it from a different user.
+	u1 := s.State.AddUser()
+	u2 := s.State.AddUser()
+	runPost(t, url, "games", authHeader(u1), `{"width": 8, "height": 8, "mines": 1}`)
+
+	_, res, _ := runDelete(t, url, "games/3/cells/3/flag", authHeader(u2), "{}")
+	if res.StatusCode != 404 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+	s.Stop()
+}
