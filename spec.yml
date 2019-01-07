@@ -62,6 +62,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Game'
+  /games/{game_id}/cells/{cell_id}/flag:
+    post:
+      summary: Flags a cell as having a mine
+      description: Just for your convenience
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '401':
+          description: Authorization information is missing or invalid.
+
+        '400':
+          description: User error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '200':
+          description: Cell was correctly unflagged
+      parameters:
+        - in: path
+          name: game_id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The game ID
+        - in: path
+          name: cell_id
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+          description: The cell ID
+
+    delete:
+      summary: Removes the flag from a cell
+      description: Just for your convenience
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '401':
+          description: Authorization information is missing or invalid.
+
+        '400':
+          description: User error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '200':
+          description: Cell was correctly unflagged
+      parameters:
+        - in: path
+          name: game_id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: The game ID
+        - in: path
+          name: cell_id
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+          description: The cell ID
 
 components:
   securitySchemes:
