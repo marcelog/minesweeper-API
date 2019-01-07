@@ -1,6 +1,8 @@
 package server
 
 import (
+	"encoding/json"
+	"fmt"
 	"testing"
 )
 
@@ -98,15 +100,37 @@ func TestErrorFlaggingInvalidCellInt(t *testing.T) {
 }
 
 func TestErrorFlaggingUnknownGame(t *testing.T) {
+	var body map[string]interface{}
 	s, _, url := newServer(t)
 
 	// Create a game with a user, try to use it from a different user.
 	u1 := s.State.AddUser()
 	u2 := s.State.AddUser()
-	runPost(t, url, "games", authHeader(u1), `{"width": 8, "height": 8, "mines": 1}`)
 
-	_, res, _ := runPost(t, url, "games/3/cells/3/flag", authHeader(u2), "{}")
+	result, _, _ := runPost(t, url, "games", authHeader(u1), `{"width": 8, "height": 8, "mines": 1}`)
+	_ = json.Unmarshal([]byte(result), &body)
+	gameID := int(body["id"].(float64))
+
+	_, res, _ := runPost(t, url, fmt.Sprintf("games/%d/cells/3/flag", gameID), authHeader(u2), "{}")
 	if res.StatusCode != 404 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+	s.Stop()
+}
+
+func TestCanFlag(t *testing.T) {
+	var body map[string]interface{}
+	s, _, url := newServer(t)
+
+	// Create a game with a user, try to use it from a different user.
+	u1 := s.State.AddUser()
+	result, _, _ := runPost(t, url, "games", authHeader(u1), `{"width": 8, "height": 8, "mines": 1}`)
+
+	_ = json.Unmarshal([]byte(result), &body)
+	gameID := int(body["id"].(float64))
+
+	_, res, _ := runPost(t, url, fmt.Sprintf("games/%d/cells/3/flag", gameID), authHeader(u1), "{}")
+	if res.StatusCode != 200 {
 		t.Fatal("Unexpected status code:", res.StatusCode)
 	}
 	s.Stop()
@@ -137,15 +161,37 @@ func TestErrorUnflaggingInvalidCellInt(t *testing.T) {
 }
 
 func TestErrorUnflaggingUnknownGame(t *testing.T) {
+	var body map[string]interface{}
 	s, _, url := newServer(t)
 
 	// Create a game with a user, try to use it from a different user.
 	u1 := s.State.AddUser()
 	u2 := s.State.AddUser()
-	runPost(t, url, "games", authHeader(u1), `{"width": 8, "height": 8, "mines": 1}`)
 
-	_, res, _ := runDelete(t, url, "games/3/cells/3/flag", authHeader(u2), "{}")
+	result, _, _ := runPost(t, url, "games", authHeader(u1), `{"width": 8, "height": 8, "mines": 1}`)
+	_ = json.Unmarshal([]byte(result), &body)
+	gameID := int(body["id"].(float64))
+
+	_, res, _ := runDelete(t, url, fmt.Sprintf("games/%d/cells/3/flag", gameID), authHeader(u2), "{}")
 	if res.StatusCode != 404 {
+		t.Fatal("Unexpected status code:", res.StatusCode)
+	}
+	s.Stop()
+}
+
+func TestCanUnflag(t *testing.T) {
+	var body map[string]interface{}
+	s, _, url := newServer(t)
+
+	// Create a game with a user, try to use it from a different user.
+	u1 := s.State.AddUser()
+
+	result, _, _ := runPost(t, url, "games", authHeader(u1), `{"width": 8, "height": 8, "mines": 1}`)
+	_ = json.Unmarshal([]byte(result), &body)
+	gameID := int(body["id"].(float64))
+
+	_, res, _ := runDelete(t, url, fmt.Sprintf("games/%d/cells/3/flag", gameID), authHeader(u1), "{}")
+	if res.StatusCode != 200 {
 		t.Fatal("Unexpected status code:", res.StatusCode)
 	}
 	s.Stop()
