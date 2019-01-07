@@ -121,6 +121,13 @@ func TestErrorFlaggingInvalidCellState(t *testing.T) {
 	}
 }
 
+func TestCreatesRightNumberOfMines(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 5)
+	if len(g.Mines) != 5 {
+		t.Fatal("Unexpected number of mines:", len(g.Mines))
+	}
+}
+
 func TestCanFlagCell(t *testing.T) {
 	g, _ := New(1, 1, 8, 8, 1)
 
