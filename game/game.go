@@ -162,6 +162,8 @@ func (g *Game) Unflag(cell int) error {
 	return nil
 }
 
+// Visit visits a cell. If the cell has a mine, the game ends here. Otherwise
+// the cell and its adjacent cells are uncovered.
 func (g *Game) Visit(cell int) error {
 	if cell < 0 || cell >= g.totalCells {
 		return errors.New("invalid cell")
@@ -175,10 +177,11 @@ func (g *Game) Visit(cell int) error {
 	if _, ok := g.Mines[cell]; ok {
 		g.State = GameLost
 		g.Board[cell] = CellMine
-		return
+		return nil
 	}
 	// TODO: Need to count adjacent mines here and uncover adjacent free cells.
 	g.Board[cell] = CellAdjMines0
+	return nil
 }
 
 // IsFinished returns true if the game has finished.

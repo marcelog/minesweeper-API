@@ -58,7 +58,16 @@ func FlagCell(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) error 
 		return notFound(ctx)
 	}
 
-	return game.Flag(cellID)
+	err = game.Flag(cellID)
+	if err != nil {
+		return err
+	}
+
+	ctx.SetContentType("application/json")
+	ctx.SetStatusCode(fasthttp.StatusOK)
+	ctx.SetBody([]byte(game.JSON()))
+
+	return nil
 }
 
 // UnflagCell handles DELETE /games/:game_id/cells/:cell_id/flag
@@ -81,7 +90,16 @@ func UnflagCell(ctx *fasthttp.RequestCtx, u *user.User, state *state.State) erro
 		return notFound(ctx)
 	}
 
-	return game.Unflag(cellID)
+	err = game.Unflag(cellID)
+	if err != nil {
+		return err
+	}
+
+	ctx.SetContentType("application/json")
+	ctx.SetStatusCode(fasthttp.StatusOK)
+	ctx.SetBody([]byte(game.JSON()))
+
+	return nil
 }
 
 func notFound(ctx *fasthttp.RequestCtx) error {
