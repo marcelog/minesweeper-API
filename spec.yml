@@ -231,6 +231,7 @@ components:
         - '#/components/schemas/CellAdjMines7'
         - '#/components/schemas/CellAdjMines8'
         - '#/components/schemas/CellFlagged'
+        - '#/components/schemas/CellMine'
     CellUnvisited:
       type: integer
       description: A cell that hasn't been visited or flagged yet
@@ -286,3 +287,8 @@ components:
       description: A cell flagged by the user
       minimum: 10
       maximum: 10
+    CellMine:
+      type: integer
+      description: A cell with an exposed mine (i.e you lost the game here pal)
+      minimum: 11
+      maximum: 11
