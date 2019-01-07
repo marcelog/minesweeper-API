@@ -51,6 +51,9 @@ const (
 
 	// CellFlagged A cell that has been flagged by the user
 	CellFlagged = 10
+
+	// CellMine A cell with an exposed mine (i.e: you lost the game here, pal)
+	CellMine = 11
 )
 
 // Game represents a game.
@@ -157,6 +160,25 @@ func (g *Game) Unflag(cell int) error {
 	}
 	g.Board[cell] = CellUnvisited
 	return nil
+}
+
+func (g *Game) Visit(cell int) error {
+	if cell < 0 || cell >= g.totalCells {
+		return errors.New("invalid cell")
+	}
+	if g.IsFinished() {
+		return errors.New("game has finished")
+	}
+	if g.Board[cell] != CellUnvisited {
+		return errors.New("cell in invalid state")
+	}
+	if _, ok := g.Mines[cell]; ok {
+		g.State = GameLost
+		g.Board[cell] = CellMine
+		return
+	}
+	// TODO: Need to count adjacent mines here and uncover adjacent free cells.
+	g.Board[cell] = CellAdjMines0
 }
 
 // IsFinished returns true if the game has finished.
