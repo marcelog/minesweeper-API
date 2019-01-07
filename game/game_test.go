@@ -109,6 +109,36 @@ func TestErrorFlaggingInvalidGameState(t *testing.T) {
 	}
 }
 
+func TestErrorFlaggingInvalidCellState(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 1)
+	g.Board[5] = CellAdjMines0
+	err := g.Flag(5)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+	if err.Error() != "cell in invalid state" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+}
+
+func TestCanFlagCell(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 1)
+
+	err := g.Flag(5)
+	if err != nil {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+	if g.Board[5] != CellFlagged {
+		t.Fatal("Cell wasn't flagged:", g.Board[5])
+	}
+
+	// Can reflag as well.
+	err = g.Flag(5)
+	if err != nil {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+}
+
 func TestErrorUnflaggingInvalidCell(t *testing.T) {
 	g, _ := New(1, 1, 8, 8, 1)
 
@@ -138,6 +168,37 @@ func TestErrorUnflaggingInvalidGameState(t *testing.T) {
 		t.Fatal("Expected error")
 	}
 	if err.Error() != "game has finished" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+}
+
+func TestErrorUnflaggingInvalidCellState(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 1)
+	g.Board[5] = CellAdjMines0
+	err := g.Unflag(5)
+	if err == nil {
+		t.Fatal("Expected error")
+	}
+	if err.Error() != "cell in invalid state" {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+}
+
+func TestCanUnflagCell(t *testing.T) {
+	g, _ := New(1, 1, 8, 8, 1)
+	g.Board[5] = CellFlagged
+
+	err := g.Unflag(5)
+	if err != nil {
+		t.Fatal("Unexpected error:", err.Error())
+	}
+	if g.Board[5] != CellUnvisited {
+		t.Fatal("Cell wasn't unflagged:", g.Board[5])
+	}
+
+	// Can re-unflag as well.
+	err = g.Unflag(5)
+	if err != nil {
 		t.Fatal("Unexpected error:", err.Error())
 	}
 }
